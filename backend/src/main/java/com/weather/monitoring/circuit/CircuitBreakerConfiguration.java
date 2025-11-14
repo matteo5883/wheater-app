@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CircuitBreakerConfiguration {
 
-    /**
-     * Creates a CircuitBreakerConfig bean with default values
-     */
-    @Bean
-    public CircuitBreakerConfig circuitBreakerConfig() {
-        return CircuitBreakerConfig.builder()
-                .name("weather-service-circuit-breaker")
-                .build();
-    }
+  /**
+   * Creates a CircuitBreakerConfig bean with default values
+   */
+  @Bean
+  public CircuitBreakerConfig circuitBreakerConfig() {
+    return CircuitBreakerConfig.builder()
+            .name("weather-service-circuit-breaker")
+            .build();
+  }
 }

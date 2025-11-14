@@ -20,15 +20,15 @@ public class HttpClientConfig {
   private long readTimeoutSeconds;
   private long writeTimeoutSeconds;
 
-    /**
-     * Creates and configures OkHttpClient bean
-     */
-    @Bean
-    public OkHttpClient okHttpClient() {
-        return new OkHttpClient.Builder()
-                .connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
-                .readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
-                .writeTimeout(writeTimeoutSeconds, TimeUnit.SECONDS)
-                .build();
-    }
+  /**
+   * Creates and configures OkHttpClient bean
+   */
+  @Bean
+  public OkHttpClient okHttpClient() {
+    return new OkHttpClient.Builder()
+            .connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
+            .readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
+            .writeTimeout(writeTimeoutSeconds, TimeUnit.SECONDS)
+            .build();
+  }
 }

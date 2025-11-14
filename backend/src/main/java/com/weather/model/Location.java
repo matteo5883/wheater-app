@@ -14,18 +14,16 @@ import lombok.ToString;
 @ToString
 public class Location {
 
-  private String city;
-  private String country;
-  private double latitude;
-  private double longitude;
-
   private static final double MIN_LATITUDE = -90.0;
   private static final double MAX_LATITUDE = 90.0;
   private static final double MIN_LONGITUDE = -180.0;
   private static final double MAX_LONGITUDE = 180.0;
   private static final int COUNTRY_CODE_LENGTH = 2;
-
   private static final double EARTH_RADIUS_KM = 6371.0;
+  private String city;
+  private String country;
+  private double latitude;
+  private double longitude;
 
   public Location(String city, String country, double latitude, double longitude) {
     setCity(city);
@@ -103,45 +101,11 @@ public class Location {
   }
 
   /**
-   * Returns a formatted string with coordinates
-   *
-   * @return formatted coordinates string
-   */
-  public String getCoordinatesString() {
-    return String.format("%.4f°N, %.4f°E", latitude, longitude);
-  }
-
-  /**
    * Returns the full location name
    *
    * @return city, country format
    */
   public String getFullName() {
     return city + ", " + country;
-  }
-
-  /**
-   * Checks if this location is in the same country as another location
-   *
-   * @param other the other location
-   * @return true if same country
-   */
-  public boolean isSameCountry(Location other) {
-    if (other == null) return false;
-    return this.country.equals(other.country);
-  }
-
-  /**
-   * Checks if this location is within a certain distance of another location
-   *
-   * @param other         the other location
-   * @param maxDistanceKm maximum distance in kilometers
-   * @return true if within distance
-   */
-  public boolean isWithinDistance(Location other, double maxDistanceKm) {
-    if (maxDistanceKm < 0) {
-      throw new IllegalArgumentException("Maximum distance cannot be negative");
-    }
-    return distanceTo(other) <= maxDistanceKm;
   }
 }

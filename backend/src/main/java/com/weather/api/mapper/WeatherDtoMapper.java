@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Mapper class for converting between domain models and DTOs
@@ -129,7 +130,7 @@ public class WeatherDtoMapper {
       return List.of();
     }
 
-    return List.of(weatherDataArray).stream()
+    return Stream.of(weatherDataArray)
             .map(this::toWeatherDataDto)
             .collect(Collectors.toList());
   }

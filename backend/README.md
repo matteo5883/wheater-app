@@ -2,64 +2,71 @@
 
 ## 📋 Overview
 
-WeatherApp è un'applicazione completa per il monitoraggio meteo implementata in Java con architettura modulare, sistema di cache, allerte personalizzabili e interfaccia a linea di comando.
+WeatherApp è un'applicazione completa per il monitoraggio meteo implementata in
+Java con architettura modulare, sistema di cache, allerte personalizzabili e
+interfaccia a linea di comando.
 
 ## 🏗️ Architettura
 
 ### **Core Components**
 
 1. **Model Layer** (`com.weather.model`)
-   - `WeatherData` - Dati meteorologici con validazione
-   - `Location` - Località geografiche con coordinate GPS
+    - `WeatherData` - Dati meteorologici con validazione
+    - `Location` - Località geografiche con coordinate GPS
 
-2. **Service Layer** (`com.weather.service`) 
-   - `WeatherService` - Business logic e orchestrazione
-   - `WeatherApiClient` - Interface per API providers
-   - `OpenWeatherMapApiClient` - Implementazione OpenWeatherMap
-   - `MockWeatherApiClient` - Mock per testing e sviluppo
+2. **Service Layer** (`com.weather.service`)
+    - `WeatherService` - Business logic e orchestrazione
+    - `WeatherApiClient` - Interface per API providers
+    - `OpenWeatherMapApiClient` - Implementazione OpenWeatherMap
+    - `MockWeatherApiClient` - Mock per testing e sviluppo
 
 3. **Forecast System** (`com.weather.forecast`)
-   - `WeatherForecast` - Container per previsioni
-   - `DailyForecast` - Previsioni giornaliere
-   - `HourlyForecast` - Previsioni orarie
+    - `WeatherForecast` - Container per previsioni
+    - `DailyForecast` - Previsioni giornaliere
+    - `HourlyForecast` - Previsioni orarie
 
 4. **Alert System** (`com.weather.alert`)
-   - `WeatherAlertSystem` - Gestione allerte
-   - `WeatherAlert` - Singola allerta
-   - `AlertType` - Tipi di allerte disponibili
+    - `WeatherAlertSystem` - Gestione allerte
+    - `WeatherAlert` - Singola allerta
+    - `AlertType` - Tipi di allerte disponibili
 
 5. **Cache System** (`com.weather.cache`)
-   - `WeatherCache` - Cache con expiration e statistics
+    - `WeatherCache` - Cache con expiration e statistics
 
 6. **Configuration** (`com.weather.config`)
-   - `WeatherConfiguration` - Gestione configurazione
+    - `WeatherConfiguration` - Gestione configurazione
 
 ## 🚀 Funzionalità Implementate
 
 ### **✅ Weather Data Management**
+
 - Recupero dati meteo correnti
 - Previsioni fino a 14 giorni
 - Validazione robusta dei dati
 - Conversioni unità (Celsius/Fahrenheit, m/s to km/h)
 
 ### **✅ Intelligent Caching**
+
 - Cache con scadenza configurabile (default 30 min)
 - Cache hit/miss statistics
 - Thread-safe implementation
 - Capacity management con LRU eviction
 
 ### **✅ Advanced Alert System**
+
 - Allerte per temperatura (alta/bassa)
 - Allerte per velocità vento
 - Allerte per precipitazioni
 - Priorità e triggering automatico
 
 ### **✅ Multiple API Providers**
+
 - OpenWeatherMap integration
 - Mock client per development/testing
 - Factory pattern per provider switching
 
 ### **✅ Production Features**
+
 - Health checks
 - Configuration management
 - Comprehensive logging
@@ -101,8 +108,10 @@ WeatherData[] forecast = weatherService.getWeatherForecast(milan, 7);
 // Setup alerts
 WeatherAlertSystem alertSystem = new WeatherAlertSystem();
 WeatherAlert tempAlert = alertSystem.createTemperatureAlert(
-    milan, 30.0, AlertType.HIGH_TEMPERATURE);
-alertSystem.addAlert(tempAlert);
+        milan, 30.0, AlertType.HIGH_TEMPERATURE);
+alertSystem.
+
+addAlert(tempAlert);
 
 // Check triggered alerts
 List<WeatherAlert> triggered = alertSystem.checkAlerts(current);
@@ -111,21 +120,21 @@ List<WeatherAlert> triggered = alertSystem.checkAlerts(current);
 ## ⚙️ Configuration
 
 ### **application.properties**
+
 ```properties
 # API Configuration
 weather.api.key=your_openweathermap_api_key
 weather.api.provider=openweathermap
 weather.api.timeout.seconds=30
-
 # Cache Settings
 weather.cache.expiration.minutes=30
 weather.cache.max.size=1000
-
 # Development
 weather.mock.enabled=true
 ```
 
 ### **Environment Variables**
+
 ```bash
 export WEATHER_API_KEY=your_api_key_here
 export WEATHER_API_PROVIDER=openweathermap  
@@ -135,6 +144,7 @@ export WEATHER_MOCK_MODE=false
 ## 🧪 Testing
 
 ### **Comprehensive Test Suite**
+
 - **67 test cases** covering all components
 - **Unit tests** per ogni classe model e service
 - **Integration tests** per interaction testing
@@ -153,38 +163,66 @@ export WEATHER_MOCK_MODE=false
 ```
 
 ### **Test Coverage Areas**
+
 - ✅ **Model validation** - Temperature limits, coordinate ranges
 - ✅ **Service operations** - API calls, caching, error handling
-- ✅ **Alert system** - Triggering, priority, deduplication  
+- ✅ **Alert system** - Triggering, priority, deduplication
 - ✅ **Cache performance** - Hit/miss rates, expiration, concurrency
 - ✅ **Edge cases** - Network errors, invalid inputs, boundary values
 
 ## 📊 Monitoring & Observability
 
-### **Health Checks**
+### **Spring Boot Actuator**
+
+The application uses Spring Boot Actuator for production-ready monitoring:
+
+```bash
+# Health check
+curl http://localhost:8080/actuator/health
+
+# Prometheus metrics
+curl http://localhost:8080/actuator/prometheus
+
+# Cache statistics
+curl http://localhost:8080/actuator/caches
+
+# All available metrics
+curl http://localhost:8080/actuator/metrics
+```
+
+### **Programmatic Health Checks**
+
 ```java
-// Service health
+// Service health (used by custom health indicator)
 boolean healthy = weatherService.isHealthy();
 
-// Cache statistics  
+// Cache statistics (programmatic access)
 String stats = weatherService.getCacheStatistics();
 // Output: "Cache Statistics: Size=45, Hits=127, Misses=23, Hit Rate=84.67%"
 ```
 
 ### **Production Monitoring**
-- Cache hit rates for performance optimization
-- API response times and error rates
+
+- **Spring Actuator** - Health checks, metrics, and operational endpoints
+- **Micrometer + Prometheus** - Metrics collection and export
+- **Circuit Breaker** - Custom resilience pattern for API calls
+- **Cache monitoring** - Hit rates and performance optimization
+- **API metrics** - Response times and error rates
+- See [MONITORING.md](../docs/MONITORING.md) for complete monitoring setup with
+  Grafana and Prometheus
 - Alert triggering frequency
 - Service availability metrics
 
 ## 🔧 Build & Deployment
 
 ### **Requirements**
-- Java 11+ 
+
+- Java 11+
 - Gradle 7+
 - Internet connection (for real API calls)
 
 ### **Build Commands**
+
 ```bash
 # Compile and run tests
 ./gradlew build
@@ -201,6 +239,7 @@ java -jar build/libs/WeatherApp-1.0-SNAPSHOT.jar
 ```
 
 ### **Docker Deployment**
+
 ```dockerfile
 FROM openjdk:11-jre-slim
 COPY build/libs/WeatherApp-1.0-SNAPSHOT.jar app.jar
@@ -211,6 +250,7 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 ## 🎨 Architecture Highlights
 
 ### **Design Patterns Used**
+
 - **Factory Pattern** - API client creation
 - **Singleton Pattern** - Configuration management
 - **Strategy Pattern** - Multiple weather providers
@@ -218,6 +258,7 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 - **Cache Aside** - Performance optimization
 
 ### **SOLID Principles**
+
 - **SRP** - Single responsibility per class
 - **OCP** - Open for extension (new API providers)
 - **LSP** - WeatherApiClient implementations
@@ -225,6 +266,7 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 - **DIP** - Dependency injection ready
 
 ### **Best Practices**
+
 - **Lombok** integration for clean code
 - **Comprehensive validation** at all levels
 - **Thread-safe** implementations
@@ -234,6 +276,7 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 ## 🚀 Future Enhancements
 
 ### **Planned Features**
+
 - [ ] **REST API endpoints** for web integration
 - [ ] **Database persistence** for historical data
 - [ ] **Metrics collection** (Prometheus/Micrometer)
@@ -243,6 +286,7 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 - [ ] **Push notifications** for mobile clients
 
 ### **Performance Optimizations**
+
 - [ ] **Redis cache** for distributed caching
 - [ ] **Circuit breaker** pattern
 - [ ] **Async API calls** for better throughput
@@ -251,27 +295,36 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 ## 📝 API Documentation
 
 ### **WeatherService Methods**
+
 ```java
 // Core operations
 WeatherData getCurrentWeather(Location location)
+
 WeatherData[] getWeatherForecast(Location location, int days)
 
 // Management
 void clearCache()
-String getCacheStatistics() 
+
+String getCacheStatistics()
+
 boolean isHealthy()
 ```
 
 ### **WeatherAlertSystem Methods**
+
 ```java
 // Alert creation
 WeatherAlert createTemperatureAlert(Location, double, AlertType)
+
 WeatherAlert createWindSpeedAlert(Location, double)
+
 WeatherAlert createPrecipitationAlert(Location, String[])
 
 // Alert management  
 void addAlert(WeatherAlert)
+
 void removeAlert(WeatherAlert)
+
 List<WeatherAlert> checkAlerts(WeatherData)
 ```
 
@@ -285,4 +338,5 @@ List<WeatherAlert> checkAlerts(WeatherData)
 
 ---
 
-**WeatherApp** - Production-ready weather application with enterprise-grade features! 🌟
+**WeatherApp** - Production-ready weather application with enterprise-grade
+features! 🌟

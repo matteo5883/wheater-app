@@ -48,23 +48,4 @@ public class DailyForecast {
     }
     this.weatherData = weatherData;
   }
-
-  /**
-   * Updates the temperature range with a new temperature value
-   *
-   * @param temperature new temperature to consider
-   */
-  public void updateTemperatureRange(double temperature) {
-    this.minTemperature = Math.min(this.minTemperature, temperature);
-    this.maxTemperature = Math.max(this.maxTemperature, temperature);
-  }
-
-  /**
-   * Returns the temperature range as a formatted string
-   *
-   * @return temperature range string
-   */
-  public String getTemperatureRange() {
-    return String.format("%.1f°C - %.1f°C", minTemperature, maxTemperature);
-  }
 }

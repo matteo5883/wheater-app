@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -221,57 +220,10 @@ public class WeatherAlertSystem {
   }
 
   /**
-   * Gets high priority alerts (priority 1 and 2)
-   *
-   * @return list of high priority alerts
-   */
-  public List<WeatherAlert> getHighPriorityAlerts() {
-    return activeAlerts.stream()
-            .filter(alert -> alert.getPriority() <= 2)
-            .sorted(Comparator.comparingInt(WeatherAlert::getPriority))
-            .collect(Collectors.toList());
-  }
-
-  /**
    * Clears all alerts
    */
   public void clearAllAlerts() {
     activeAlerts.clear();
     alertsById.clear();
-  }
-
-  /**
-   * Gets the number of active alerts
-   *
-   * @return number of active alerts
-   */
-  public int getActiveAlertCount() {
-    return activeAlerts.size();
-  }
-
-  /**
-   * Gets an alert by ID
-   *
-   * @param alertId the alert ID
-   * @return the alert or null if not found
-   */
-  public WeatherAlert getAlertById(String alertId) {
-    return alertsById.get(alertId);
-  }
-
-  /**
-   * Updates an existing alert
-   *
-   * @param alert the updated alert
-   */
-  public void updateAlert(WeatherAlert alert) {
-    if (alert != null && alertsById.containsKey(alert.getId())) {
-      alertsById.put(alert.getId(), alert);
-      // Update in the list as well
-      int index = activeAlerts.indexOf(alert);
-      if (index >= 0) {
-        activeAlerts.set(index, alert);
-      }
-    }
   }
 }

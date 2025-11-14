@@ -12,15 +12,15 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class JacksonConfig {
 
-    /**
-     * Creates and configures ObjectMapper bean for JSON processing
-     */
-    @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        // Add Java 8 time support
-        mapper.registerModule(new JavaTimeModule());
-        return mapper;
-    }
+  /**
+   * Creates and configures ObjectMapper bean for JSON processing
+   */
+  @Bean
+  @Primary
+  public ObjectMapper objectMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    // Add Java 8 time support
+    mapper.registerModule(new JavaTimeModule());
+    return mapper;
+  }
 }

@@ -39,24 +39,24 @@ public class CacheConfig {
     }
   }
 
-    /**
-     * Primary cache manager using Caffeine
-     */
-    @Bean
-    @Primary
-    public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+  /**
+   * Primary cache manager using Caffeine
+   */
+  @Bean
+  @Primary
+  public CacheManager cacheManager() {
+    CaffeineCacheManager cacheManager = new CaffeineCacheManager();
 
-        cacheManager.setCaffeine(Caffeine.newBuilder()
-                .maximumSize(maximumSize)
-                .expireAfterWrite(expiration)
-                .recordStats() // Enable statistics
-        );
+    cacheManager.setCaffeine(Caffeine.newBuilder()
+            .maximumSize(maximumSize)
+            .expireAfterWrite(expiration)
+            .recordStats() // Enable statistics
+    );
 
-        // Pre-create cache names
-        cacheManager.setCacheNames(java.util.Arrays.asList("weather-current", "weather-forecast", "weather-alerts"));
+    // Pre-create cache names
+    cacheManager.setCacheNames(java.util.Arrays.asList("weather-current", "weather-forecast", "weather-alerts"));
 
-        return cacheManager;
-    }
+    return cacheManager;
+  }
 
 }

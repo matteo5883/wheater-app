@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @ToString
 public class WeatherForecast {
 
+  private static final int MAX_FORECAST_DAYS = 14;
   @Getter
   private final Location location;
   private final Map<LocalDate, DailyForecast> dailyForecasts;
@@ -28,8 +29,6 @@ public class WeatherForecast {
   @Getter
   @Setter
   private LocalDateTime lastUpdated;
-
-  private static final int MAX_FORECAST_DAYS = 14;
 
   public WeatherForecast(Location location) {
     if (location == null) {
@@ -122,18 +121,6 @@ public class WeatherForecast {
   }
 
   /**
-   * Gets hourly forecasts for a specific date
-   *
-   * @param date the date
-   * @return list of hourly forecasts for that date
-   */
-  public List<HourlyForecast> getHourlyForecastsForDate(LocalDate date) {
-    return hourlyForecasts.stream()
-            .filter(forecast -> forecast.getDateTime().toLocalDate().equals(date))
-            .collect(Collectors.toList());
-  }
-
-  /**
    * Calculates the average temperature across all daily forecasts
    *
    * @return average temperature
@@ -143,102 +130,5 @@ public class WeatherForecast {
             .mapToDouble(forecast -> forecast.getWeatherData().getTemperature())
             .average()
             .orElse(0.0);
-  }
-
-  /**
-   * Gets the minimum temperature from all forecasts
-   *
-   * @return minimum temperature
-   */
-  public double getMinTemperature() {
-    return dailyForecasts.values().stream()
-            .mapToDouble(forecast -> forecast.getWeatherData().getTemperature())
-            .min()
-            .orElse(Double.MAX_VALUE);
-  }
-
-  /**
-   * Gets the maximum temperature from all forecasts
-   *
-   * @return maximum temperature
-   */
-  public double getMaxTemperature() {
-    return dailyForecasts.values().stream()
-            .mapToDouble(forecast -> forecast.getWeatherData().getTemperature())
-            .max()
-            .orElse(Double.MIN_VALUE);
-  }
-
-  /**
-   * Checks if there are any precipitation alerts in the forecast
-   *
-   * @return true if precipitation is expected
-   */
-  public boolean hasPrecipitationAlert() {
-    return dailyForecasts.values().stream()
-            .anyMatch(forecast -> {
-              String condition = forecast.getWeatherData().getCondition().toLowerCase();
-              return condition.contains("rain") || condition.contains("snow") ||
-                      condition.contains("storm") || condition.contains("drizzle");
-            });
-  }
-
-  /**
-   * Gets the forecast summary for the next few days
-   *
-   * @param days number of days to include in summary
-   * @return forecast summary
-   */
-  public String getForecastSummary(int days) {
-    if (days <= 0) {
-      throw new IllegalArgumentException("Number of days must be positive");
-    }
-
-    List<DailyForecast> forecasts = getDailyForecasts().stream()
-            .limit(days)
-            .collect(Collectors.toList());
-
-    if (forecasts.isEmpty()) {
-      return "No forecast data available";
-    }
-
-    StringBuilder summary = new StringBuilder();
-    summary.append(String.format("Forecast for %s:\n", location.getFullName()));
-
-    for (DailyForecast forecast : forecasts) {
-      summary.append(String.format("%s: %.1f°C, %s\n",
-              forecast.getDate().toString(),
-              forecast.getWeatherData().getTemperature(),
-              forecast.getWeatherData().getCondition()));
-    }
-
-    return summary.toString().trim();
-  }
-
-  /**
-   * Clears all forecast data
-   */
-  public void clearForecasts() {
-    dailyForecasts.clear();
-    hourlyForecasts.clear();
-    this.lastUpdated = LocalDateTime.now();
-  }
-
-  /**
-   * Gets the number of days for which we have forecasts
-   *
-   * @return number of forecast days
-   */
-  public int getForecastDays() {
-    return dailyForecasts.size();
-  }
-
-  /**
-   * Checks if the forecast data is stale (older than 1 hour)
-   *
-   * @return true if data needs refresh
-   */
-  public boolean isStale() {
-    return lastUpdated.isBefore(LocalDateTime.now().minusHours(1));
   }
 }

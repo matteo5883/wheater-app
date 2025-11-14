@@ -1,109 +1,131 @@
-# Alerting rules for WeatherApp
+# Alerting rules for WeatherApp (using Spring Actuator/Micrometer metrics)
 groups:
   - name: weather_app_alerts
     rules:
-      # Application Health Alerts
+      # Application Health Alerts (using Actuator health endpoint)
       - alert: WeatherAppDown
-        expr: weather_health_status == 0
+        expr: up{job="weather-app"} == 0
         for: 1m
         labels:
           severity: critical
           service: weather-app
         annotations:
           summary: "WeatherApp is down"
-          description: "WeatherApp health check is failing for more than 1 minute"
+          description: "WeatherApp instance is not responding for more than 1 minute"
 
-      - alert: WeatherAppDegraded
-        expr: weather_health_status == 1 and weather_health_check_status{check="weather-api"} == 0
-        for: 2m
-        labels:
-          severity: warning
-          service: weather-app
-        annotations:
-          summary: "WeatherApp API degraded"
-          description: "Weather API health check is failing"
-
-      # Circuit Breaker Alerts
-      - alert: CircuitBreakerOpen
-        expr: weather_circuit_breaker_state > 0.5
-        for: 30s
-        labels:
-          severity: warning
-          service: weather-app
-        annotations:
-          summary: "Circuit breaker {{ $labels.name }} is open"
-          description: "Circuit breaker {{ $labels.name }} has been open for more than 30 seconds"
-
-      # Performance Alerts
-      - alert: HighAPIResponseTime
-        expr: rate(weather_api_calls_duration_ms_sum[5m]) / rate(weather_api_calls_duration_ms_count[5m]) > 5000
+      # Performance Alerts (HTTP metrics from Spring Boot)
+      - alert: HighHTTPResponseTime
+        expr: histogram_quantile(0.95, rate(http_server_requests_seconds_bucket{uri!~"/actuator.*"}[5m])) > 5
         for: 3m
         labels:
           severity: warning
           service: weather-app
         annotations:
-          summary: "High API response time"
-          description: "Average API response time is {{ $value }}ms over the last 5 minutes"
+          summary: "High HTTP response time"
+          description: "P95 HTTP response time is {{ $value }}s for {{ $labels.uri }}"
 
-      - alert: HighAPIFailureRate
-        expr: rate(weather_api_requests_total{status="failure"}[5m]) / rate(weather_api_requests_total[5m]) > 0.1
+      - alert: HighHTTPErrorRate
+        expr: rate(http_server_requests_seconds_count{status=~"5.."}[5m]) / rate(http_server_requests_seconds_count[5m]) > 0.05
         for: 2m
         labels:
           severity: critical
           service: weather-app
         annotations:
-          summary: "High API failure rate"
-          description: "API failure rate is {{ $value | humanizePercentage }} over the last 5 minutes"
+          summary: "High HTTP error rate"
+          description: "HTTP 5xx error rate is {{ $value | humanizePercentage }}"
 
-      # Cache Performance Alerts
-      - alert: LowCacheHitRate
-        expr: weather_cache_hit_rate < 0.5 and weather_cache_hits_total + weather_cache_misses_total > 100
-        for: 5m
-        labels:
-          severity: warning
-          service: weather-app
-        annotations:
-          summary: "Low cache hit rate"
-          description: "Cache hit rate is {{ $value | humanizePercentage }} over the last 5 minutes"
-
-      # Resource Usage Alerts
-      - alert: HighMemoryUsage
-        expr: (jvm_memory_used_bytes / jvm_memory_max_bytes) > 0.85
+      # Custom API call metrics (if instrumented with Micrometer)
+      - alert: HighAPIFailureRate
+        expr: rate(weather_api_calls_total{status="failure"}[5m]) / rate(weather_api_calls_total[5m]) > 0.1
         for: 2m
         labels:
-          severity: warning
+          severity: critical
           service: weather-app
         annotations:
-          summary: "High JVM memory usage"
-          description: "JVM memory usage is {{ $value | humanizePercentage }}"
+          summary: "High weather API failure rate"
+          description: "Weather API failure rate is {{ $value | humanizePercentage }}"
 
-      - alert: HighThreadCount
-        expr: jvm_threads_current > 500
-        for: 2m
-        labels:
-          severity: warning
-          service: weather-app
-        annotations:
-          summary: "High thread count"
-          description: "JVM thread count is {{ $value }}"
-
-      # Business Logic Alerts
-      - alert: NoWeatherDataUpdates
-        expr: increase(weather_api_requests_total{status="success"}[10m]) == 0
-        for: 10m
-        labels:
-          severity: warning
-          service: weather-app
-        annotations:
-          summary: "No successful weather data updates"
-          description: "No successful API calls in the last 10 minutes"
-
-      - alert: HighAlertTriggerRate
-        expr: rate(weather_alerts_total{triggered="true"}[5m]) > 0.1
+      - alert: HighAPICallDuration
+        expr: rate(weather_api_calls_duration_seconds_sum[5m]) / rate(weather_api_calls_duration_seconds_count[5m]) > 5
         for: 3m
+        labels:
+          severity: warning
+          service: weather-app
+        annotations:
+          summary: "High weather API call duration"
+          description: "Average weather API call duration is {{ $value }}s"
+
+      # Cache Performance Alerts (Spring Cache metrics)
+      - alert: LowCacheHitRate
+        expr: |
+          (
+            rate(cache_gets_total{result="hit"}[10m])
+            /
+            rate(cache_gets_total[10m])
+          ) < 0.5
+          and
+          rate(cache_gets_total[10m]) > 0.1
+        for: 5m
         labels:
           severity: info
           service: weather-app
         annotations:
-          summary: "High alert trigger rate"
-          description: "Weather alerts are being triggered at a high rate: {{ $value }} per second"
+          summary: "Low cache hit rate for {{ $labels.cache }}"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} for cache {{ $labels.cache }}"
+
+      # JVM Resource Alerts
+      - alert: HighMemoryUsage
+        expr: |
+          sum(jvm_memory_used_bytes{area="heap"})
+          /
+          sum(jvm_memory_max_bytes{area="heap"})
+          > 0.85
+        for: 2m
+        labels:
+          severity: warning
+          service: weather-app
+        annotations:
+          summary: "High JVM heap memory usage"
+          description: "JVM heap memory usage is {{ $value | humanizePercentage }}"
+
+      - alert: HighThreadCount
+        expr: jvm_threads_live_threads > 500
+        for: 2m
+        labels:
+          severity: warning
+          service: weather-app
+        annotations:
+          summary: "High JVM thread count"
+          description: "JVM thread count is {{ $value }}"
+
+      - alert: HighGCTime
+        expr: rate(jvm_gc_pause_seconds_sum[1m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: weather-app
+        annotations:
+          summary: "High GC time"
+          description: "JVM is spending {{ $value | humanizePercentage }} of time in GC"
+
+      # System Resource Alerts
+      - alert: HighCPUUsage
+        expr: system_cpu_usage > 0.8
+        for: 3m
+        labels:
+          severity: warning
+          service: weather-app
+        annotations:
+          summary: "High system CPU usage"
+          description: "System CPU usage is {{ $value | humanizePercentage }}"
+
+      # Business Logic Alerts
+      - alert: NoAPICallsRecently
+        expr: increase(weather_api_calls_total[10m]) == 0
+        for: 10m
+        labels:
+          severity: info
+          service: weather-app
+        annotations:
+          summary: "No weather API calls recently"
+          description: "No weather API calls detected in the last 10 minutes"

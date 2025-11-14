@@ -1,4 +1,3 @@
-
 package com.weather.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,39 +18,39 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OpenWeatherMapApiClientInjectionTest {
 
-    @Mock
-    private WeatherApiProperties weatherProperties;
+  @Mock
+  private WeatherApiProperties weatherProperties;
 
-    @Mock
-    private ObjectMapper objectMapper;
+  @Mock
+  private ObjectMapper objectMapper;
 
-    @Mock
-    private OkHttpClient httpClient;
+  @Mock
+  private OkHttpClient httpClient;
 
-    @InjectMocks
-    private OpenWeatherMapApiClient apiClient;
+  @InjectMocks
+  private OpenWeatherMapApiClient apiClient;
 
-    @Test
-    void shouldInjectAllDependenciesCorrectly() {
-      when(weatherProperties.getApiKey()).thenReturn("test-api-key-12345");
-      when(weatherProperties.getBaseUrl()).thenReturn("https://test-api.example.com/v1");
-        // Verify the client is created successfully with all dependencies
-        assertThat(apiClient).isNotNull();
+  @Test
+  void shouldInjectAllDependenciesCorrectly() {
+    when(weatherProperties.getApiKey()).thenReturn("test-api-key-12345");
+    when(weatherProperties.getBaseUrl()).thenReturn("https://test-api.example.com/v1");
+    // Verify the client is created successfully with all dependencies
+    assertThat(apiClient).isNotNull();
 
-        // Verify that the properties can be accessed (indirectly through the mock)
-        assertThat(weatherProperties.getApiKey()).isEqualTo("test-api-key-12345");
-        assertThat(weatherProperties.getBaseUrl()).isEqualTo("https://test-api.example.com/v1");
-    }
+    // Verify that the properties can be accessed (indirectly through the mock)
+    assertThat(weatherProperties.getApiKey()).isEqualTo("test-api-key-12345");
+    assertThat(weatherProperties.getBaseUrl()).isEqualTo("https://test-api.example.com/v1");
+  }
 
-    @Test
-    void shouldUseInjectedHttpClient() {
-        // Verify HTTP client is injected
-        assertThat(httpClient).isNotNull();
-    }
+  @Test
+  void shouldUseInjectedHttpClient() {
+    // Verify HTTP client is injected
+    assertThat(httpClient).isNotNull();
+  }
 
-    @Test
-    void shouldUseInjectedObjectMapper() {
-        // Verify ObjectMapper is injected
-        assertThat(objectMapper).isNotNull();
-    }
+  @Test
+  void shouldUseInjectedObjectMapper() {
+    // Verify ObjectMapper is injected
+    assertThat(objectMapper).isNotNull();
+  }
 }

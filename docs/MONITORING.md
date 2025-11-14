@@ -2,50 +2,53 @@
 
 ## 🚀 Complete Production Monitoring Solution
 
-Questo progetto include un sistema di monitoring completo per WeatherApp con Prometheus, AlertManager, Grafana e health checks enterprise-grade.
+This project includes a complete monitoring system for WeatherApp using **Spring Boot Actuator**, Prometheus, AlertManager, and Grafana for enterprise-grade observability.
 
-## 📦 Componenti Implementati
+## 📦 Components Implemented
 
-### 🔍 Health Check System
-- **`HealthCheckManager`** - Orchestratore per tutti gli health checks
-- **`WeatherApiHealthCheck`** - Verifica connettività API esterna
-- **`CacheHealthCheck`** - Monitoraggio performance cache
-- **`SystemHealthCheck`** - Controllo risorse sistema (memoria, disco, CPU)
+### 🔍 Health Check System (Spring Actuator)
+- **Spring Boot Actuator** - Built-in health checks and metrics
+- **Custom Health Indicators** - Weather API and cache monitoring via `MonitoringController`
+- **Automatic health aggregation** - All system components monitored
+- **Kubernetes probes support** - Ready-to-use readiness/liveness endpoints
 
 ### ⚡ Circuit Breaker Pattern
-- **`CircuitBreaker`** - Implementazione completa con stati CLOSED/OPEN/HALF_OPEN
-- **Configurazione flessibile** - Soglie failure, timeout, retry logic
-- **Metrics integrate** - Statistiche dettagliate per monitoring
+- **`CircuitBreaker`** - Custom implementation with CLOSED/OPEN/HALF_OPEN states
+- **Flexible configuration** - Failure thresholds, timeout, retry logic
+- **Integrated metrics** - Detailed statistics exposed via Micrometer
+- **Used by `WeatherService`** - Protects external API calls
 
-### 📈 Prometheus Metrics
-- **`MetricsCollector`** - Collector compatibile formato Prometheus
-- **`WeatherMetricsCollector`** - Metrics specifiche per WeatherApp
-- **Metriche disponibili:**
-  - API response times e failure rates
-  - Cache hit/miss ratios
+### 📈 Prometheus Metrics (Micrometer)
+- **Micrometer Registry** - Standard metrics export for Prometheus
+- **Spring Boot Actuator integration** - Automatic JVM and application metrics
+- **Custom metrics** - Weather-specific metrics in `WeatherService` and `MonitoringController`
+- **Available metrics:**
+  - API response times and failure rates
+  - Cache hit/miss ratios  
   - Circuit breaker states
-  - JVM memory e thread counts
-  - Health check status
+  - JVM memory and thread counts
+  - HTTP request metrics
   - Weather alert trigger rates
 
-### 🌐 HTTP Endpoints
-- **`/metrics`** - Prometheus metrics endpoint
-- **`/health`** - Detailed health status (JSON)
-- **`/ready`** - Kubernetes readiness probe
-- **`/live`** - Kubernetes liveness probe  
-- **`/info`** - Application information
+### 🌐 Spring Actuator Endpoints
+- **`/actuator/health`** - Detailed health status with custom indicators
+- **`/actuator/prometheus`** - Prometheus metrics endpoint
+- **`/actuator/metrics`** - Individual metrics inspection
+- **`/actuator/caches`** - Cache statistics
+- **`/actuator/info`** - Application information
 
-## 🏗️ Architettura
+## 🏗️ Architecture
 
 ```
 WeatherApp (Port 8080)
-├── /metrics          → Prometheus scraping
-├── /health           → Health aggregation
-├── /ready            → K8s readiness
-└── /live             → K8s liveness
+├── /actuator/prometheus  → Prometheus scraping
+├── /actuator/health      → Health aggregation + custom indicators
+├── /actuator/metrics     → Individual metrics
+├── /actuator/caches      → Cache statistics
+└── /actuator/info        → Application info
 
 Prometheus (Port 9090)
-├── Scrapes WeatherApp metrics
+├── Scrapes /actuator/prometheus endpoint
 ├── Evaluates alerting rules
 └── Triggers alerts → AlertManager
 
@@ -64,6 +67,7 @@ Grafana (Port 3000)
 
 ### 1. Build Application
 ```bash
+cd backend
 ./gradlew build
 docker build -t weather-app .
 ```
@@ -76,50 +80,78 @@ docker-compose -f docker-compose.monitoring.yml up -d
 ```
 
 ### 3. Access Dashboards
-- **WeatherApp**: http://localhost:8080
-- **Prometheus**: http://localhost:9090
+- **WeatherApp API**: http://localhost:8080
+- **Spring Actuator Health**: http://localhost:8080/actuator/health
+- **Prometheus Metrics**: http://localhost:8080/actuator/prometheus
+- **Prometheus UI**: http://localhost:9090
 - **AlertManager**: http://localhost:9093  
 - **Grafana**: http://localhost:3000 (admin/admin)
 
 ## 📊 Available Metrics
 
-### Application Metrics
+### Application Metrics (Custom via Micrometer)
 ```prometheus
-# Health status (0=DOWN, 1=UP)
-weather_health_status
+# API call metrics
+weather_api_calls_duration_seconds_sum
+weather_api_calls_duration_seconds_count
+weather_api_calls_duration_seconds_max
+weather_api_calls_total{operation, status}
 
-# API response times
-weather_api_calls_duration_ms_sum
-weather_api_calls_duration_ms_count
+# Circuit breaker metrics (available via MonitoringController)
+# Exposed as part of health endpoint and custom gauges
 
-# API request counts  
-weather_api_requests_total{operation, status}
-
-# Cache performance
-weather_cache_hit_rate
-weather_cache_size
-weather_cache_hits_total
-weather_cache_misses_total
-
-# Circuit breaker state (0=CLOSED, 0.5=HALF_OPEN, 1=OPEN)
-weather_circuit_breaker_state{name}
-weather_circuit_breaker_failure_rate{name}
-weather_circuit_breaker_total_requests{name}
-
-# Weather alerts
-weather_alerts_total{type, location, triggered}
+# HTTP metrics (automatic via Spring Boot)
+http_server_requests_seconds{method, uri, status, outcome}
+http_server_requests_seconds_max{method, uri, status, outcome}
 ```
 
-### System Metrics
+### System Metrics (Automatic via Micrometer)
 ```prometheus  
-# JVM memory
-jvm_memory_used_bytes
-jvm_memory_max_bytes
-jvm_threads_current
+# JVM Memory
+jvm_memory_used_bytes{area, id}
+jvm_memory_committed_bytes{area, id}
+jvm_memory_max_bytes{area, id}
 
-# Application uptime
-weather_app_uptime_seconds
+# JVM Threads
+jvm_threads_live_threads
+jvm_threads_daemon_threads
+jvm_threads_peak_threads
+jvm_threads_states_threads{state}
+
+# JVM GC
+jvm_gc_pause_seconds_sum{action, cause}
+jvm_gc_pause_seconds_count{action, cause}
+jvm_gc_memory_allocated_bytes_total
+jvm_gc_memory_promoted_bytes_total
+
+# System
+system_cpu_usage
+system_cpu_count
+process_cpu_usage
+process_uptime_seconds
+process_start_time_seconds
+
+# Tomcat/HTTP Server
+tomcat_sessions_active_current_sessions
+tomcat_sessions_created_sessions_total
+tomcat_threads_busy_threads
+tomcat_threads_current_threads
+
+# Cache (Spring Cache via Actuator)
+cache_gets_total{cache, result}
+cache_puts_total{cache}
+cache_evictions_total{cache}
+cache_size{cache}
 ```
+
+### Health Check Metrics
+Available via `/actuator/health` endpoint:
+- Weather service health status
+- Circuit breaker state
+- Cache statistics
+- Database connectivity (if applicable)
+- Disk space
+- Custom health indicators
 
 ## 🚨 Alerting Rules
 
@@ -176,6 +208,34 @@ weather_app_uptime_seconds
 
 ## 🛠️ Configuration
 
+### Spring Actuator Configuration
+The application uses Spring Boot Actuator for monitoring. Configuration in `application.yml`:
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,caches
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests: 50ms,100ms,200ms,500ms
+```
+
 ### Environment Variables
 ```bash
 # Required for real API usage
@@ -199,26 +259,63 @@ WEATHER_CACHE_EXPIRATION_MINUTES=30
 
 ## 🔧 Customization
 
-### Adding New Metrics
+### Adding New Metrics (Micrometer)
 ```java
-// In your code
-metricsCollector.incrementCounter("custom_metric_total", "label", "value");
-metricsCollector.setGauge("custom_gauge", 42.0, "label", "value");
-metricsCollector.recordHistogram("custom_histogram", duration);
-```
-
-### Adding New Health Checks
-```java
-// Implement HealthCheck interface
-public class CustomHealthCheck implements HealthCheck {
-    public HealthStatus check() {
-        // Your health check logic
-        return HealthStatus.up("custom-component");
+// Inject MeterRegistry in your component
+@Service
+@RequiredArgsConstructor
+public class MyService {
+    private final MeterRegistry meterRegistry;
+    
+    public void myMethod() {
+        // Counter
+        Counter.builder("custom_metric_total")
+            .tag("type", "example")
+            .register(meterRegistry)
+            .increment();
+        
+        // Gauge
+        Gauge.builder("custom_gauge", this, MyService::calculateValue)
+            .tag("type", "example")
+            .register(meterRegistry);
+        
+        // Timer
+        Timer.builder("custom_operation_duration")
+            .tag("operation", "example")
+            .register(meterRegistry)
+            .record(() -> {
+                // Your timed operation
+            });
     }
 }
+```
 
-// Register with manager
-healthCheckManager.registerHealthCheck(new CustomHealthCheck());
+### Adding New Health Checks (Spring Actuator)
+```java
+// Implement HealthIndicator interface
+@Component
+public class CustomHealthIndicator implements HealthIndicator {
+    
+    @Override
+    public Health health() {
+        try {
+            // Your health check logic
+            boolean isHealthy = checkCustomComponent();
+            
+            return isHealthy 
+                ? Health.up()
+                    .withDetail("custom-component", "operational")
+                    .build()
+                : Health.down()
+                    .withDetail("custom-component", "failed")
+                    .build();
+        } catch (Exception e) {
+            return Health.down()
+                .withException(e)
+                .build();
+        }
+    }
+}
 ```
 
 ### Adding New Alerts
@@ -252,14 +349,16 @@ spec:
         - containerPort: 8080
         readinessProbe:
           httpGet:
-            path: /ready
+            path: /actuator/health/readiness
             port: 8080
           initialDelaySeconds: 30
+          periodSeconds: 10
         livenessProbe:
           httpGet:
-            path: /live  
+            path: /actuator/health/liveness
             port: 8080
           initialDelaySeconds: 30
+          periodSeconds: 10
 ```
 
 ### Docker Swarm
@@ -278,9 +377,10 @@ docker stack deploy -c docker-compose.monitoring.yml weather-monitoring
 ### Common Issues
 
 **Metrics not appearing**
-- Check `/metrics` endpoint returns data
+- Check `/actuator/prometheus` endpoint returns data
 - Verify Prometheus target is UP in Status → Targets
-- Confirm scrape_configs in prometheus.yml
+- Confirm scrape_configs in prometheus.yml points to `/actuator/prometheus`
+- Ensure `management.endpoints.web.exposure.include` includes `prometheus` in application.yml
 
 **Alerts not firing**  
 - Check Prometheus → Alerts page for rule evaluation

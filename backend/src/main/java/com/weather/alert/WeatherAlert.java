@@ -84,14 +84,6 @@ public class WeatherAlert {
     return precipitationConditions != null ? new ArrayList<>(precipitationConditions) : null;
   }
 
-  public void setPrecipitationConditions(List<String> precipitationConditions) {
-    if (precipitationConditions != null) {
-      this.precipitationConditions = precipitationConditions;
-    } else {
-      this.precipitationConditions = null;
-    }
-  }
-
   public void setPriority(int priority) {
     if (priority < 1 || priority > 5) {
       throw new IllegalArgumentException("Priority must be between 1 (highest) and 5 (lowest)");
@@ -111,13 +103,6 @@ public class WeatherAlert {
    */
   public void deactivate() {
     this.active = false;
-  }
-
-  /**
-   * Activates the alert
-   */
-  public void activate() {
-    this.active = true;
   }
 
   /**

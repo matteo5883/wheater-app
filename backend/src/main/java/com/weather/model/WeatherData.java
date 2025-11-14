@@ -18,15 +18,14 @@ import static java.time.ZoneId.systemDefault;
 @ToString
 public class WeatherData {
 
+  private static final double ABSOLUTE_ZERO_CELSIUS = -273.15;
+  private static final double MAX_RECORDED_TEMPERATURE = 100.0;
   private double temperature;
   private String condition;
   private int humidity;
   private double windSpeed;
   @Setter
   private LocalDateTime timestamp;
-
-  private static final double ABSOLUTE_ZERO_CELSIUS = -273.15;
-  private static final double MAX_RECORDED_TEMPERATURE = 100.0;
 
   public WeatherData() {
     this.timestamp = LocalDateTime.now();

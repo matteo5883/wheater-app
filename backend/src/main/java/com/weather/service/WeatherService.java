@@ -21,12 +21,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class WeatherService {
 
+  private static final int MAX_FORECAST_DAYS = 14;
   private final WeatherApiClient apiClient;
   private final CacheManager cacheManager;
   private final CircuitBreaker circuitBreaker;
   private final MeterRegistry meterRegistry;
-  private static final int MAX_FORECAST_DAYS = 14;
-
 
   /**
    * Gets current weather for a location with Spring caching and monitoring

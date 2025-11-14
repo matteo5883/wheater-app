@@ -27,9 +27,4 @@ public class LocationDto {
 
   @Schema(description = "Longitude coordinate", example = "9.1900")
   private Double longitude;
-
-  @Schema(description = "Full location name", example = "Milan, IT")
-  public String getFullName() {
-    return city + ", " + country;
-  }
 }

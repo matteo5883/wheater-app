@@ -25,11 +25,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OpenWeatherMapApiClient implements WeatherApiClient {
 
-    private final WeatherApiProperties weatherProperties;
-    private final ObjectMapper objectMapper;
-    private final OkHttpClient httpClient;
-
-
+  private final WeatherApiProperties weatherProperties;
+  private final ObjectMapper objectMapper;
+  private final OkHttpClient httpClient;
 
   @Override
   public WeatherData getCurrentWeather(Location location) {

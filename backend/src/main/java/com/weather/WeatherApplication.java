@@ -17,9 +17,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Slf4j
 public class WeatherApplication {
 
-    public static void main(String[] args) {
-        log.info("🌤️ Starting WeatherApp with Spring Boot...");
-        SpringApplication.run(WeatherApplication.class, args);
-        log.info("🚀 WeatherApp started successfully!");
-    }
+  public static void main(String[] args) {
+    log.info("🌤️ Starting WeatherApp with Spring Boot...");
+    SpringApplication.run(WeatherApplication.class, args);
+    log.info("🚀 WeatherApp started successfully!");
+  }
 }
