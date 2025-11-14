@@ -1,5 +1,7 @@
 # 🌤️ WeatherApp Monorepo
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Complete weather application with Spring Boot backend, Angular frontend, and Ionic mobile app.
 
 ## 🏗️ Architecture
@@ -228,7 +230,9 @@ ionic capacitor run android
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Third-party dependencies and their licenses are documented in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
 
 ---
 

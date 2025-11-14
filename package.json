@@ -41,6 +41,6 @@
     "url": "git+https://github.com/yourusername/weather-app.git"
   },
   "keywords": ["weather", "spring-boot", "angular", "ionic", "mobile", "web"],
-  "author": "Your Name",
+   "author": "Matteo Pezzanera",
   "license": "MIT"
 }
