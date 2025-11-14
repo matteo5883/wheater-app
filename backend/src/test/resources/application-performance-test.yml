@@ -1,0 +1,40 @@
+# Performance test configuration
+# This profile is used for performance and load testing
+
+weather:
+  api-key: performance-test-api-key
+  base-url: https://performance-test-api.example.com/v1
+  api-provider: openweathermap
+  enable-mock-mode: true  # Use mock for consistent performance testing
+  cache-expiration-minutes: 60  # Longer cache for performance tests
+  max-cache-size: 10000  # Large cache for performance tests
+  max-forecast-days: 14
+  api-timeout-seconds: 60  # Longer timeout for performance tests
+  api-retry-attempts: 5
+
+  # HTTP Client configuration optimized for performance testing
+  http-client:
+    connect-timeout-seconds: 30
+    read-timeout-seconds: 60
+    write-timeout-seconds: 30
+
+# Spring configuration for performance tests
+spring:
+  profiles:
+    active: performance-test
+  output:
+    ansi:
+      enabled: never
+
+# Logging for performance tests (minimal logging to avoid overhead)
+logging:
+  level:
+    root: WARN
+    com.weather: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"
+
+# JVM optimization hints for performance tests
+management:
+  endpoints:
+    enabled-by-default: false

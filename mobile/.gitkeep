@@ -1,0 +1,7 @@
+# Mobile Placeholders
+# These will be replaced when Ionic project is created
+
+# This file exists to reserve the mobile directory
+# Run 'npm run setup:ionic' or './scripts/setup-project.sh' to create the Ionic project
+
+echo "Mobile directory - Ionic project will be created here"

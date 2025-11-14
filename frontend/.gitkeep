@@ -1,0 +1,7 @@
+# Frontend Placeholders
+# These will be replaced when Angular project is created
+
+# This file exists to reserve the frontend directory
+# Run 'npm run setup:angular' or './scripts/setup-project.sh' to create the Angular project
+
+echo "Frontend directory - Angular project will be created here"

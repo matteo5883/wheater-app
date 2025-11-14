@@ -1,0 +1,31 @@
+# Integration test configuration
+# This profile is used for integration tests that need more realistic settings
+
+weather:
+  api-key: integration-test-api-key
+  base-url: https://integration-test-api.example.com/v2
+  api-provider: openweathermap
+  enable-mock-mode: false  # Use real API client for integration tests
+  cache-expiration-minutes: 1
+  max-cache-size: 50
+  max-forecast-days: 3
+  api-timeout-seconds: 30
+  api-retry-attempts: 2
+
+  # HTTP Client configuration for integration tests
+  http-client:
+    connect-timeout-seconds: 10
+    read-timeout-seconds: 20
+    write-timeout-seconds: 10
+
+# Spring configuration for integration tests
+spring:
+  profiles:
+    active: integration-test
+
+# Logging for integration tests (more verbose)
+logging:
+  level:
+    com.weather: TRACE
+    okhttp3: DEBUG
+    org.springframework.web: DEBUG

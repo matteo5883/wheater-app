@@ -1,0 +1,510 @@
+{
+  "info": {
+    "name": "WeatherApp API",
+    "description": "Complete collection for testing all WeatherApp REST endpoints",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "apiVersion",
+      "value": "v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Weather API",
+      "item": [
+        {
+          "name": "Get Current Weather",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/weather/current?city=Milan&country=IT&latitude=45.4642&longitude=9.1900",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "weather", "current"],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Milan",
+                  "description": "City name"
+                },
+                {
+                  "key": "country",
+                  "value": "IT",
+                  "description": "Country code (ISO 3166-1 alpha-2)"
+                },
+                {
+                  "key": "latitude",
+                  "value": "45.4642",
+                  "description": "Latitude coordinate (optional)"
+                },
+                {
+                  "key": "longitude",
+                  "value": "9.1900",
+                  "description": "Longitude coordinate (optional)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Weather Forecast",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/weather/forecast?city=Milan&country=IT&days=5&latitude=45.4642&longitude=9.1900",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "weather", "forecast"],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Milan",
+                  "description": "City name"
+                },
+                {
+                  "key": "country",
+                  "value": "IT",
+                  "description": "Country code"
+                },
+                {
+                  "key": "days",
+                  "value": "5",
+                  "description": "Number of forecast days (1-14)"
+                },
+                {
+                  "key": "latitude",
+                  "value": "45.4642",
+                  "description": "Latitude coordinate (optional)"
+                },
+                {
+                  "key": "longitude",
+                  "value": "9.1900",
+                  "description": "Longitude coordinate (optional)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cache Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/weather/cache/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "weather", "cache", "stats"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/weather/cache",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "weather", "cache"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Weather Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/weather/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "weather", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Weather Alerts",
+      "item": [
+        {
+          "name": "Get All Active Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "alerts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Alerts for Location",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/alerts/location?city=Milan&country=IT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "alerts", "location"],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Milan",
+                  "description": "City name"
+                },
+                {
+                  "key": "country",
+                  "value": "IT",
+                  "description": "Country code"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Temperature Alert",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location\": {\n    \"city\": \"Milan\",\n    \"country\": \"IT\",\n    \"latitude\": 45.4642,\n    \"longitude\": 9.1900\n  },\n  \"threshold\": 35.0,\n  \"operator\": \"GREATER_THAN\",\n  \"description\": \"High temperature alert for Milan\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/alerts/temperature",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "alerts", "temperature"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Precipitation Alert",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location\": {\n    \"city\": \"Milan\",\n    \"country\": \"IT\",\n    \"latitude\": 45.4642,\n    \"longitude\": 9.1900\n  },\n  \"expectedCondition\": \"rain\",\n  \"description\": \"Rain alert for Milan\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/alerts/precipitation",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "alerts", "precipitation"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Wind Alert",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location\": {\n    \"city\": \"Milan\",\n    \"country\": \"IT\",\n    \"latitude\": 45.4642,\n    \"longitude\": 9.1900\n  },\n  \"threshold\": 50.0,\n  \"description\": \"Strong wind alert for Milan\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/alerts/wind",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "alerts", "wind"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Alert",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/alerts/{{alertId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "alerts", "{{alertId}}"],
+              "variable": [
+                {
+                  "key": "alertId",
+                  "value": "alert-123",
+                  "description": "Alert ID to delete"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cache Management",
+      "item": [
+        {
+          "name": "Get All Cache Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cache/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cache", "stats"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Specific Cache Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cache/stats/weather-current",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cache", "stats", "weather-current"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Specific Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cache/weather-current",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cache", "weather-current"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear All Caches",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cache/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cache", "all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cache Configuration",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cache/config",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cache", "config"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Monitoring & Health",
+      "item": [
+        {
+          "name": "Get Detailed Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/monitoring/health/detailed",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "monitoring", "health", "detailed"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Circuit Breaker Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/monitoring/circuit-breaker",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "monitoring", "circuit-breaker"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/monitoring/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "monitoring", "metrics"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Monitoring Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/monitoring/cache/clear",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "monitoring", "cache", "clear"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Spring Boot Actuator",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "info"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "metrics"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Prometheus Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/prometheus",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "prometheus"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cache Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/caches",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "caches"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set timestamp for requests",
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Basic response validation",
+          "pm.test('Status code is not 5xx', function () {",
+          "    pm.expect(pm.response.code).to.be.below(500);",
+          "});",
+          "",
+          "// Check response time",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "// Log response for debugging",
+          "console.log('Response:', pm.response.text());"
+        ]
+      }
+    }
+  ]
+}
+

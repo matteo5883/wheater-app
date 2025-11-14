@@ -1,0 +1,126 @@
+# Alertmanager configuration for WeatherApp
+global:
+  # SMTP configuration for email alerts
+  smtp_smarthost: 'localhost:587'
+  smtp_from: 'alerts@weatherapp.com'
+  smtp_auth_username: 'alerts@weatherapp.com'
+  smtp_auth_password: 'password'
+
+# Define notification templates
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+route:
+  # Default route - group by alertname and send to default receiver
+  group_by: ['alertname', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'weather-team'
+
+  # Specific routes for different alert types
+  routes:
+    # Critical alerts go to on-call team immediately
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      group_wait: 0s
+      repeat_interval: 30m
+
+    # Warning alerts are grouped and sent less frequently
+    - match:
+        severity: warning
+      receiver: 'warning-alerts'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 2h
+
+    # Info alerts are grouped and sent even less frequently
+    - match:
+        severity: info
+      receiver: 'info-alerts'
+      group_wait: 1m
+      group_interval: 10m
+      repeat_interval: 12h
+
+receivers:
+  # Default receiver for weather team
+  - name: 'weather-team'
+    email_configs:
+      - to: 'weather-team@company.com'
+        subject: '[WeatherApp] {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Service: {{ .Labels.service }}
+          Severity: {{ .Labels.severity }}
+          {{ end }}
+
+  # Critical alerts receiver (email + webhook)
+  - name: 'critical-alerts'
+    email_configs:
+      - to: 'oncall@company.com'
+        subject: '[CRITICAL] WeatherApp Alert - {{ .GroupLabels.alertname }}'
+        body: |
+          🚨 CRITICAL ALERT 🚨
+
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Service: {{ .Labels.service }}
+          Started: {{ .StartsAt }}
+          {{ end }}
+
+          Please investigate immediately.
+
+    # Webhook for integration with PagerDuty/Slack
+    webhook_configs:
+      - url: 'http://localhost:9094/webhook'
+        send_resolved: true
+
+  # Warning alerts receiver
+  - name: 'warning-alerts'
+    email_configs:
+      - to: 'weather-team@company.com'
+        subject: '[WARNING] WeatherApp - {{ .GroupLabels.alertname }}'
+        body: |
+          ⚠️ Warning Alert
+
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Service: {{ .Labels.service }}
+          Started: {{ .StartsAt }}
+          {{ end }}
+
+  # Info alerts receiver
+  - name: 'info-alerts'
+    email_configs:
+      - to: 'weather-team@company.com'
+        subject: '[INFO] WeatherApp - {{ .GroupLabels.alertname }}'
+        body: |
+          ℹ️ Info Alert
+
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Service: {{ .Labels.service }}
+          Started: {{ .StartsAt }}
+          {{ end }}
+
+# Inhibition rules to prevent spam
+inhibit_rules:
+  # If WeatherApp is down, inhibit all other alerts from the same service
+  - source_match:
+      alertname: WeatherAppDown
+    target_match:
+      service: weather-app
+    equal: ['service']
+
+  # If circuit breaker is open, inhibit API-related alerts
+  - source_match:
+      alertname: CircuitBreakerOpen
+    target_match_re:
+      alertname: '(HighAPIResponseTime|HighAPIFailureRate)'
+    equal: ['service']

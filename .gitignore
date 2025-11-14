@@ -1,0 +1,102 @@
+### Monorepo - Root Level ###
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+
+### Backend (Spring Boot/Java/Gradle) ###
+backend/build/
+backend/.gradle/
+backend/out/
+backend/*.jar
+backend/**/application-local.yml
+backend/**/application-local.yaml
+
+### Frontend (Angular) ###
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+frontend/.nyc_output/
+
+### Mobile (Ionic) ###
+mobile/node_modules/
+mobile/dist/
+mobile/www/
+mobile/.ionic/
+mobile/coverage/
+mobile/platforms/
+mobile/plugins/
+
+### Security - Environment Variables ###
+.env
+.env.local
+.env.production
+.env.*.local
+
+### API Keys and Secrets ###
+api-keys.txt
+secrets/
+*.key
+*.pem
+
+### IDEs ###
+.idea/
+.vscode/
+*.swp
+*.swo
+.kotlin
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Logs ###
+*.log
+logs/
+
+### IntelliJ IDEA ###
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Gradle ###
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar

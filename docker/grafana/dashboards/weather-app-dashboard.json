@@ -1,0 +1,121 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "WeatherApp Monitoring Dashboard",
+    "tags": ["weather-app", "monitoring"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Application Health Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "weather_health_status",
+            "legendFormat": "Health Status"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "API Response Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(weather_api_calls_duration_ms_sum[5m]) / rate(weather_api_calls_duration_ms_count[5m])",
+            "legendFormat": "Avg Response Time"
+          }
+        ],
+        "yAxes": [
+          {"label": "Milliseconds", "min": 0}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Cache Performance",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "weather_cache_hit_rate",
+            "legendFormat": "Hit Rate"
+          },
+          {
+            "expr": "weather_cache_size",
+            "legendFormat": "Cache Size"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Circuit Breaker Status",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "weather_circuit_breaker_state",
+            "legendFormat": "{{name}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "API Request Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(weather_api_requests_total[5m])",
+            "legendFormat": "{{operation}} - {{status}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "JVM Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes",
+            "legendFormat": "Used Memory"
+          },
+          {
+            "expr": "jvm_memory_max_bytes",
+            "legendFormat": "Max Memory"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 7,
+        "title": "Weather Alerts Triggered",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(weather_alerts_total{triggered=\"true\"}[5m])",
+            "legendFormat": "{{type}} - {{location}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "10s"
+  }
+}
+

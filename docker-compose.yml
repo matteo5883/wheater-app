@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - WEATHER_API_KEY=${WEATHER_API_KEY:-}
+      - WEATHER_MOCK_MODE=${WEATHER_MOCK_MODE:-true}
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ./backend/logs:/app/logs
+    networks:
+      - weather-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    environment:
+      - API_BASE_URL=http://localhost:8080
+    networks:
+      - weather-network
+
+  mobile-preview:
+    build: ./mobile
+    ports:
+      - "8100:8100"
+    depends_on:
+      - backend
+    environment:
+      - API_BASE_URL=http://localhost:8080
+    networks:
+      - weather-network
+
+  # Optional: Add database for future use
+  # database:
+  #   image: postgres:15
+  #   environment:
+  #     - POSTGRES_DB=weatherapp
+  #     - POSTGRES_USER=weather
+  #     - POSTGRES_PASSWORD=weather123
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - weather_db_data:/var/lib/postgresql/data
+  #   networks:
+  #     - weather-network
+
+networks:
+  weather-network:
+    driver: bridge
+
+volumes:
+  weather_db_data:

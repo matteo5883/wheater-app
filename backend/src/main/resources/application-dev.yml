@@ -1,0 +1,18 @@
+# Development environment configuration
+weather:
+  api-key: ${WEATHER_API_KEY:dev-api-key-placeholder}
+  base-url: https://api.openweathermap.org/data/2.5
+  api-provider: openweathermap
+  enable-mock-mode: true
+
+  # Development-specific settings
+  http-client:
+    connect-timeout-seconds: 5   # Faster timeout for development
+    read-timeout-seconds: 15
+    write-timeout-seconds: 5
+
+# Logging configuration for development
+logging:
+  level:
+    com.weather: DEBUG
+    okhttp3: DEBUG

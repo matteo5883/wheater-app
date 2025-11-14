@@ -1,0 +1,18 @@
+# Production environment configuration
+weather:
+  api-key: ${WEATHER_API_KEY:}
+  base-url: https://api.openweathermap.org/data/2.5
+  api-provider: openweathermap
+  enable-mock-mode: false
+
+  # Production-specific settings
+  http-client:
+    connect-timeout-seconds: 15  # Longer timeout for production
+    read-timeout-seconds: 45
+    write-timeout-seconds: 15
+
+# Production logging configuration
+logging:
+  level:
+    com.weather: INFO
+    okhttp3: WARN

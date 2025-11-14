@@ -1,0 +1,133 @@
+# WeatherApp Spring Boot Configuration
+spring:
+  application:
+    name: weather-app
+
+  # Profile configuration
+  profiles:
+    active: development
+
+  # Web configuration
+  web:
+    resources:
+      add-mappings: true
+
+  # Jackson configuration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+
+  # Cache configuration
+  cache:
+    type: simple
+    cache-names:
+      - weather-data
+      - weather-forecasts
+
+# WeatherApp specific configuration
+weather:
+  api-key: ${WEATHER_API_KEY:}
+  api-provider: openweathermap
+  base-url: https://api.openweathermap.org/data/2.5
+  cache-expiration-minutes: 30
+  max-cache-size: 1000
+  max-forecast-days: 14
+  api-timeout-seconds: 30
+  api-retry-attempts: 3
+  enable-mock-mode: ${WEATHER_MOCK_MODE:true}
+
+  # Spring Cache configuration
+  cache:
+    expiration: PT30M  # ISO-8601 Duration format (30 minutes)
+    maximum-size: 1000
+    record-stats: true
+
+  # HTTP Client configuration
+  http-client:
+    connect-timeout-seconds: 10
+    read-timeout-seconds: 30
+    write-timeout-seconds: 10
+
+# Server configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Management endpoints (Spring Actuator)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,caches
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests: 50ms,100ms,200ms,500ms
+
+# Logging configuration
+logging:
+  level:
+    com.weather: INFO
+    org.springframework.cache: DEBUG
+    io.micrometer: DEBUG
+    okhttp3: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/weather-app.log
+
+---
+# Development profile
+spring:
+  config:
+    activate:
+      on-profile: development
+
+weather:
+  enable-mock-mode: true
+  api-timeout-seconds: 10
+
+logging:
+  level:
+    com.weather: DEBUG
+    root: INFO
+
+---
+# Production profile
+spring:
+  config:
+    activate:
+      on-profile: production
+
+weather:
+  enable-mock-mode: false
+  cache-expiration-minutes: 60
+  api-timeout-seconds: 30
+
+server:
+  port: ${PORT:8080}
+
+logging:
+  level:
+    com.weather: INFO
+    root: WARN
+
