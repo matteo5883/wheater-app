@@ -42,9 +42,9 @@ if [ ! -d "frontend/src" ]; then
         --package-manager=npm \
         --directory=. \
         --strict=true \
-        --standalone=false
+        --standalone=true
     cd ..
-    echo "✅ Angular project created"
+    echo "✅ Angular project created with standalone components"
 else
     echo "ℹ️  Angular project already exists"
 fi
