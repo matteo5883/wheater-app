@@ -7,7 +7,7 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-import static java.time.ZoneId.*;
+import static java.time.ZoneId.systemDefault;
 
 /**
  * Weather data model with validation and unit conversion capabilities.

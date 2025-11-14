@@ -1,9 +1,7 @@
 package com.weather.api.controller;
 
 import com.weather.api.dto.response.ApiResponse;
-import com.weather.api.dto.response.CacheStatsResponseDto;
 import com.weather.api.dto.response.CurrentWeatherResponseDto;
-import com.weather.api.dto.response.HealthStatusResponseDto;
 import com.weather.api.dto.response.WeatherForecastResponseDto;
 import com.weather.api.mapper.WeatherDtoMapper;
 import com.weather.model.Location;

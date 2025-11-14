@@ -1,11 +1,11 @@
 package com.weather.monitoring.metrics;
 
+import com.weather.monitoring.circuit.CircuitBreaker;
 import com.weather.monitoring.health.HealthCheckManager;
 import com.weather.monitoring.health.HealthStatus;
-import com.weather.monitoring.circuit.CircuitBreaker;
-import org.springframework.cache.CacheManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
 
 import java.util.Map;
 import java.util.concurrent.Executors;

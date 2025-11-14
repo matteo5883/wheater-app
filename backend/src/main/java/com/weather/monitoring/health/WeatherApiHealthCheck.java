@@ -1,7 +1,7 @@
 package com.weather.monitoring.health;
 
-import com.weather.service.WeatherApiClient;
 import com.weather.model.Location;
+import com.weather.service.WeatherApiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

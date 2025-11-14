@@ -1,14 +1,20 @@
 package com.weather.forecast;
 
-import com.weather.model.WeatherData;
 import com.weather.model.Location;
+import com.weather.model.WeatherData;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import static org.junit.jupiter.api.Assertions.*;
-import java.time.LocalDateTime;
+import org.junit.jupiter.api.Test;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Weather Forecast Tests")
 public class WeatherForecastTest {

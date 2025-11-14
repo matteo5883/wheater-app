@@ -1,7 +1,7 @@
 package com.weather.util;
 
-import com.weather.model.WeatherData;
 import com.weather.model.Location;
+import com.weather.model.WeatherData;
 import lombok.experimental.UtilityClass;
 
 /**

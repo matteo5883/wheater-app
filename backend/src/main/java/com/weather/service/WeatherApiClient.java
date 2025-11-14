@@ -1,7 +1,7 @@
 package com.weather.service;
 
-import com.weather.model.WeatherData;
 import com.weather.model.Location;
+import com.weather.model.WeatherData;
 
 /**
  * Interface for weather API client implementations

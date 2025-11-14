@@ -1,10 +1,9 @@
 
 package com.weather.service.impl;
 
-import com.weather.config.WeatherApiProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weather.config.WeatherApiProperties;
 import okhttp3.OkHttpClient;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

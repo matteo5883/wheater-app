@@ -2,8 +2,6 @@ package com.weather.monitoring.circuit;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 

@@ -1,10 +1,10 @@
 package com.weather.monitoring.http;
 
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
-import com.weather.monitoring.metrics.WeatherMetricsCollector;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import com.weather.monitoring.health.HealthCheckManager;
+import com.weather.monitoring.metrics.WeatherMetricsCollector;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

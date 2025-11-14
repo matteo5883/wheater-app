@@ -1,14 +1,17 @@
 package com.weather.monitoring;
 
-import org.springframework.cache.CacheManager;
 import com.weather.monitoring.circuit.CircuitBreaker;
-import com.weather.monitoring.health.*;
+import com.weather.monitoring.health.CacheHealthCheck;
+import com.weather.monitoring.health.HealthCheckManager;
+import com.weather.monitoring.health.SystemHealthCheck;
+import com.weather.monitoring.health.WeatherApiHealthCheck;
 import com.weather.monitoring.http.MonitoringHttpServer;
 import com.weather.monitoring.metrics.MetricsCollector;
 import com.weather.monitoring.metrics.WeatherMetricsCollector;
 import com.weather.service.WeatherApiClient;
 import com.weather.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -1,6 +1,7 @@
 package com.weather.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import java.time.Duration;
-import jakarta.annotation.PostConstruct;
 
 /**
  * Spring Cache configuration using Caffeine as the cache provider
